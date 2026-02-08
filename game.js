@@ -380,11 +380,7 @@ class GameOverScene extends Phaser.Scene {
     });
 
     this.time.delayedCall(1000, () => {
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage("game-end", "*");
-      } else {
-        window.location.href = "/#merch";
-      }
+      window.parent.postMessage("game-end", "*");
     });
   }
 }
@@ -404,4 +400,14 @@ const config = {
   scene: [MenuScene, GameScene, GameOverScene],
 };
 
-const game = new Phaser.Game(config);
+async function waitForFont(fontFamily) {
+  await document.fonts.load(`16px "${fontFamily}"`);
+  await document.fonts.ready;
+}
+
+(async () => {
+  await waitForFont("Pixelify");
+
+  // Now it is 100% safe to start Phaser
+  new Phaser.Game(config);
+})();
